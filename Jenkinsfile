@@ -1,4 +1,4 @@
-@Library('iti-jenkins-java-sharedlib@main') _
+@Library('java-sharedlib@main') _
 
 pipeline {
     agent {
