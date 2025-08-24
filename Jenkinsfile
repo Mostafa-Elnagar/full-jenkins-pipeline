@@ -8,7 +8,6 @@ pipeline {
     parameters {
         string(name: 'IMAGE_NAME', defaultValue: 'java-app', description: 'Docker image name')
         string(name: 'IMAGE_TAG', defaultValue: "1.${env.BUILD_NUMBER}", description: 'Docker image tag')
-        string(name: 'REGISTRY_URL', defaultValue: 'docker.io', description: 'Docker registry URL')
         string(name: 'DOCKER_CREDS_ID', defaultValue: 'dockerHubCreds', description: 'My docker credientials')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip running tests')
         booleanParam(name: 'PUSH_IMAGE', defaultValue: true, description: 'Push image to registry')
@@ -72,7 +71,10 @@ pipeline {
                 }
             }
         }
-        
+        stage('Login to Registry') {
+            def imageOps = new org.iti.ops.ImageOps(this)
+            imageOps.loginRegistry(credentialsId: params.DOCKER_CREDS_ID)
+        }  
         stage('Build & Push Images') {
             parallel {
                 stage('Build Image 1') {
@@ -86,8 +88,6 @@ pipeline {
                                     imageTag: params.IMAGE_TAG,
                                     dockerfile: 'Dockerfile',
                                     context: '.',
-                                    registryUrl: params.REGISTRY_URL,
-                                    credentialsId: params.DOCKER_CREDS_ID
                                 )
                             }
                         }
@@ -105,8 +105,6 @@ pipeline {
                                     imageTag: params.IMAGE_TAG,
                                     dockerfile: 'Dockerfile',
                                     context: '.',
-                                    registryUrl: params.REGISTRY_URL,
-                                    credentialsId: params.DOCKER_CREDS_ID
                                 )
                             }
                         }
@@ -114,7 +112,11 @@ pipeline {
                 }
             }
         }
-    }   
+        stage('Logout Registry') {
+            def imageOps = org.iti.ops.ImageOps(this)
+            imageOps.logoutRegistry()
+        }
+    }
     post {
         always {
             script {
