@@ -8,6 +8,8 @@ pipeline {
     parameters {
         string(name: 'IMAGE_NAME', defaultValue: 'java-app', description: 'Docker image name')
         string(name: 'IMAGE_TAG', defaultValue: "1.${env.BUILD_NUMBER}", description: 'Docker image tag')
+        string(name: 'DOCKER_REGISTRY', defaultValue: 'docker.io', description: 'Docker registry')
+        string(name: 'REGISTRY_NAMESPACE', defaultValue: 'mostafaelnagar', description: 'Docker username')
         string(name: 'DOCKER_CREDS_ID', defaultValue: 'dockerHubCreds', description: 'My docker credientials')
         booleanParam(name: 'SKIP_TESTS', defaultValue: false, description: 'Skip running tests')
         booleanParam(name: 'PUSH_IMAGE', defaultValue: true, description: 'Push image to registry')
@@ -92,6 +94,8 @@ pipeline {
                                     imageTag: params.IMAGE_TAG,
                                     dockerfile: 'Dockerfile',
                                     context: '.',
+                                    registry: params.DOCKER_REGISTRY,
+                                    username: params.DOCKER_USERNAME,
                                 )
                             }
                         }
@@ -109,6 +113,8 @@ pipeline {
                                     imageTag: params.IMAGE_TAG,
                                     dockerfile: 'Dockerfile',
                                     context: '.',
+                                    registry: params.DOCKER_REGISTRY,
+                                    namespace: params.REGISTRY_NAMESPACE,
                                 )
                             }
                         }
