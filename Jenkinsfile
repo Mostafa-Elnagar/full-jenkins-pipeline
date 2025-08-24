@@ -123,7 +123,7 @@ pipeline {
         stage('Logout Registry') {
             steps {
                 script {
-                    def imageOps = org.iti.ops.ImageOps(this)
+                    def imageOps = new org.iti.ops.ImageOps(this)
                     imageOps.logoutRegistry()
                 }
             }
