@@ -72,8 +72,10 @@ pipeline {
             }
         }
         stage('Login to Registry') {
-            def imageOps = new org.iti.ops.ImageOps(this)
-            imageOps.loginRegistry(credentialsId: params.DOCKER_CREDS_ID)
+            script {
+                def imageOps = new org.iti.ops.ImageOps(this)
+                imageOps.loginRegistry(credentialsId: params.DOCKER_CREDS_ID)
+            }
         }  
         stage('Build & Push Images') {
             parallel {
@@ -113,8 +115,10 @@ pipeline {
             }
         }
         stage('Logout Registry') {
-            def imageOps = org.iti.ops.ImageOps(this)
-            imageOps.logoutRegistry()
+            script {
+                def imageOps = org.iti.ops.ImageOps(this)
+                imageOps.logoutRegistry()
+            }
         }
     }
     post {
