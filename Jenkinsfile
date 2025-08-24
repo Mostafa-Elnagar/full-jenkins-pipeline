@@ -1,4 +1,4 @@
-@Library('sharedlib') _
+@Library('iti-jenkins-java-sharedlib@main') _
 
 pipeline {
     agent {
@@ -87,7 +87,7 @@ pipeline {
                                     dockerfile: 'Dockerfile',
                                     context: '.',
                                     registryUrl: params.REGISTRY_URL,
-                                    credentialsId: ''
+                                    credentialsId: params.DOCKER_CREDS_ID
                                 )
                             }
                         }
@@ -106,7 +106,7 @@ pipeline {
                                     dockerfile: 'Dockerfile',
                                     context: '.',
                                     registryUrl: params.REGISTRY_URL,
-                                    credentialsId: ''
+                                    credentialsId: params.DOCKER_CREDS_ID
                                 )
                             }
                         }
