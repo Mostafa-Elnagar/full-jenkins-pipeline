@@ -81,47 +81,45 @@ pipeline {
                 }
             }
         }  
-        stage('Build & Push Images') {
-            parallel {
-                stage('Build Image 1') {
-                    steps {
-                        dir('java-app-1') {
-                            script {
-                                def imageOps = new org.iti.ops.ImageOps(this)
-                                
-                                imageOps.buildAndPush(
-                                    imageName: "${params.IMAGE_NAME}-1",
-                                    imageTag: params.IMAGE_TAG,
-                                    dockerfile: 'Dockerfile',
-                                    context: '.',
-                                    registry: params.DOCKER_REGISTRY,
-                                    username: params.DOCKER_USERNAME,
-                                )
-                            }
-                        }
-                    }
-                }
-                
-                stage('Build Image 2') {
-                    steps {
-                        dir('java-app-2') {
-                            script {
-                                def imageOps = new org.iti.ops.ImageOps(this)
-                                
-                                imageOps.buildAndPush(
-                                    imageName: "${params.IMAGE_NAME}-2",
-                                    imageTag: params.IMAGE_TAG,
-                                    dockerfile: 'Dockerfile',
-                                    context: '.',
-                                    registry: params.DOCKER_REGISTRY,
-                                    namespace: params.REGISTRY_NAMESPACE,
-                                )
-                            }
-                        }
+
+        stage('Build & Push Image 1') {
+            steps {
+                dir('java-app-1') {
+                    script {
+                        def imageOps = new org.iti.ops.ImageOps(this)
+                        
+                        imageOps.buildAndPush(
+                            imageName: "${params.IMAGE_NAME}-1",
+                            imageTag: params.IMAGE_TAG,
+                            dockerfile: 'Dockerfile',
+                            context: '.',
+                            registry: params.DOCKER_REGISTRY,
+                            username: params.DOCKER_USERNAME,
+                        )
                     }
                 }
             }
         }
+        
+        stage('Build & Push Image 2') {
+            steps {
+                dir('java-app-2') {
+                    script {
+                        def imageOps = new org.iti.ops.ImageOps(this)
+                        
+                        imageOps.buildAndPush(
+                            imageName: "${params.IMAGE_NAME}-2",
+                            imageTag: params.IMAGE_TAG,
+                            dockerfile: 'Dockerfile',
+                            context: '.',
+                            registry: params.DOCKER_REGISTRY,
+                            namespace: params.REGISTRY_NAMESPACE,
+                        )
+                    }
+                }
+            }
+        }
+
         stage('Logout Registry') {
             steps {
                 script {
